@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ## This class defines the properties and synapses of a dLGN interneuron.
-
+print('hello')
 from os.path import join
 import numpy as np
 #import pylab as plt
