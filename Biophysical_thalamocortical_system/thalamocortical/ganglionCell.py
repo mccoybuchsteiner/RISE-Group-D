@@ -232,13 +232,13 @@ class LinearFilter(object):
         c = np.exp(-self.step/tauC)
         self.b = np.zeros(1)
         self.b[0] = np.power(1-c,self.N)
-        self.a = np.zeros(self.N+1)
+        self.a = np.zeros(int(self.N+1))
 
         for i in np.arange(0,self.N+1,1):
-            self.a[i] = np.power(-c,i) * self.combination(self.N,i)
+            self.a[int(i)] = np.power(-c,int(i)) * self.combination(self.N,int(i))
 
         self.last_inputs = np.zeros(self.M)
-        self.last_values = np.zeros(self.N+1)
+        self.last_values = np.zeros(int(self.N+1))
 
     # Combinatorials of gamma function:
     def arrangement(self,n,k):
@@ -259,9 +259,9 @@ class LinearFilter(object):
     def update(self):
 
         # Rotation on addresses of the last_values.
-        fakepoint=self.last_values[self.N]
+        fakepoint=self.last_values[int(self.N)]
         for i in np.arange(1,self.N+1,1):
-            self.last_values[self.N+1-i]=self.last_values[self.N-i]
+            self.last_values[int(self.N+1-i)]=self.last_values[int(self.N-i)]
         self.last_values[0]=fakepoint
 
         # Calculating new value of filter recursively:
@@ -269,14 +269,14 @@ class LinearFilter(object):
         for j in np.arange(1,self.M,1):
             self.last_values[0] += ( self.b[j] * self.last_inputs[j] )
         for k in np.arange(1,self.N+1,1):
-            self.last_values[0] -= ( self.a[k] * self.last_values[k] )
+            self.last_values[0] -= ( self.a[int(k)] * self.last_values[int(k)] )
         if(self.a[0]!=1.0):
             self.last_values[0] = self.last_values[0] / self.a[0]
 
     # reset values
     def resetValues(self):
         self.last_inputs = np.zeros(self.M)
-        self.last_values = np.zeros(self.N+1)
+        self.last_values = np.zeros(int(self.N+1))
 
 ## Ganglion cell
 class ganglionCell(object):

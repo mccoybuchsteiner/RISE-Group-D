@@ -77,7 +77,7 @@ feedback_type = 2
 
 # Stimulus setup
 # Stimulus type (0 = flashing circular spot, 1 = patch grating, 2 = receptive field)
-stimulustype = 0
+stimulustype = 1
 
 # Type of spot (used only for the receptive field). RF_1 = white spot, RF_2 =
 # black spot
@@ -225,7 +225,7 @@ def worker(stimulus,stimulus_type):
             NEURON_cells_to_sim = []
 
             # to remember positions of IN's dendrites
-            IN_dend_dict = np.zeros([N*N,2],dtype=int)
+            IN_dend_dict = np.zeros([int(N)*int(N),2],dtype=int)
 
             #################################
             ### Creation of neuron models ###
@@ -735,6 +735,6 @@ def main():
         end_c = time.time()
         print("time elapsed (h): %s" % str((end_c - start_c)/3600.0))
 
-if __name__ == '__main__':
+if __name__ == 'dt':
     main()
 

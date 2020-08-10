@@ -5,7 +5,7 @@
 
 from os.path import join
 import numpy as np
-#import pylab as plt
+import pylab as plt
 from time import time
 import neuron
 import LFPy
@@ -17,8 +17,9 @@ import insertChannels
 nrn = neuron.h
 
 # Path to folder of neuron models
-root_path = os.path.dirname(os.path.realpath(__file__))
-root_path = root_path[0:root_path.find("thalamocortical")]
+root_path = "/Users/carol.h.wang/Documents/GitHub/RISE-Group-D/Biophysical_thalamocortical_system/"
+#root_path = os.path.dirname(os.path.realpath(__file__))
+#root_path = root_path[0:root_path.find("thalamocortical")]
 
 class InterneuronTemplate(object):
 
@@ -53,14 +54,15 @@ class InterneuronTemplate(object):
             # 4 dendrites
             'morphology': join(self.model_path, 'ballnsticks2.hoc'),
             'passive':True,
-            'v_init' : -63,
+            'v_init' : -63.,
             'extracellular':False,
             'nsegs_method': 'lambda_f',
-            'lambda_f': 50,
-            'timeres_NEURON':0.1,
-            'timeres_python':0.1,
-            'tstopms':2000,
-            'tstartms':0,
+            'lambda_f': 50.,
+            'dt':0.1, 
+            #'timeres_NEURON':0.1,
+            #'timeres_python':0.1,
+            'tstop':2000.,
+            'tstart':0.,
             'templatefile': join(self.model_path, 'LFPyCellTemplate.hoc'),
             'templatename':'LFPyCellTemplate',
             'templateargs':None,
@@ -69,10 +71,11 @@ class InterneuronTemplate(object):
             'delete_sections':False,
 
             # passive mechanisms
-            'e_pas' : -67.5,
-            'Ra' : 113,
-            'rm' : 22000,
-            'cm' : 1.1
+            'passive_parameters': dict(g_pas=1/22000, e_pas=-67.5, Ra=13, cm=1.1)
+            #'e_pas' : -67.5,
+            #'Ra' : 113,
+            #'rm' : 22000,
+            #'cm' : 1.1
         }
 
         cell = LFPy.TemplateCell(**cell_parameters)

@@ -5,7 +5,7 @@
 
 from os.path import join
 import numpy as np
-#import pylab as plt
+import pylab as plt
 from time import time
 import neuron
 import LFPy
@@ -162,7 +162,7 @@ class InterneuronTemplate(object):
 
 
 
-if __name__ == '__main__':
+if __name__ == 'dt':
 
     print("main")
 

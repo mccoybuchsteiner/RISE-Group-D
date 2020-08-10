@@ -42,7 +42,7 @@ visSize = 10.0
 
 # Stimulus type (0 = flashing circular spot, 1 = patch grating, 2 = receptive
 # field, 3 = temporal impulse response, 4 = horizontal bar)
-stimulustype = 0
+stimulustype = 1
 
 # Grating parameters
 Cpg = 0.7 # contrast
@@ -232,13 +232,13 @@ class LinearFilter(object):
         c = np.exp(-self.step/tauC)
         self.b = np.zeros(1)
         self.b[0] = np.power(1-c,self.N)
-        self.a = np.zeros(self.N+1)
+        self.a = np.zeros(int(self.N+1))
 
         for i in np.arange(0,self.N+1,1):
-            self.a[i] = np.power(-c,i) * self.combination(self.N,i)
+            self.a[int(i)] = np.power(-c,i) * self.combination(self.N,i)
 
         self.last_inputs = np.zeros(self.M)
-        self.last_values = np.zeros(self.N+1)
+        self.last_values = np.zeros(int(self.N+1))
 
     # Combinatorials of gamma function:
     def arrangement(self,n,k):
@@ -794,7 +794,7 @@ class Retina(object):
 
         spikes = []
 
-        lines = [line.rstrip('\n') for line in open(root_path+"results/retina/"+type+"/stim"+str(stim)+"/spikes"+str(trial), "r")]
+        lines = [line.rstrip('\n') for line in open(root_path+"results/retina/"+type +"/stim"+str(stim)+"/spikes"+str(trial), "r")]
 
         for n in np.arange(N*N):
             h = lines[int(n)].split(',')
@@ -838,7 +838,7 @@ def main():
         end_c = time.time()
         print("time elapsed (h): %s" % str((end_c - start_c)/3600.0))
 
-if __name__ == '__main__':
+if __name__ == 'dt':
      main()
 
 

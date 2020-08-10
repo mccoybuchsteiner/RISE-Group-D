@@ -225,7 +225,7 @@ def worker(stimulus,stimulus_type):
             NEURON_cells_to_sim = []
 
             # to remember positions of IN's dendrites
-            IN_dend_dict = np.zeros([N*N,2],dtype=int)
+            IN_dend_dict = np.zeros([int(N)*int(N),2],dtype=int)
 
             #################################
             ### Creation of neuron models ###

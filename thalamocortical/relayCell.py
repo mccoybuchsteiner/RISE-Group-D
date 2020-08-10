@@ -143,7 +143,7 @@ class RCTemplate(object):
 
         return netcon
 
-if __name__ == '__main__':
+if __name__ == 'dt':
 
     print("main")
 

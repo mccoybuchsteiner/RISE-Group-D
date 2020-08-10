@@ -9,7 +9,7 @@ import sys,os,os.path
 import scipy.fftpack
 
 # Data path
-data_path = "/home/pablo/Desktop/Biophysical_thalamocortical_system/thalamocortical/results/"
+data_path = "/Users/carol.h.wang/Documents/GitHub/RISE-Group-D/thalamacortical/results/"
 
 # Number of neurons (all layers except INs)
 N = 10.0
@@ -18,7 +18,8 @@ N = 10.0
 stimulus = np.arange(0.0,10.2,0.2)
 
 # Folder
-folder = "retina/disk/ON"
+#folder = "retina/disk/ON"
+folder = "patch_grating/0/ON"
 
 # Type of stimulus (disk/patch)
 type = "disk"

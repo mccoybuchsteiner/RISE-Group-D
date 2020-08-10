@@ -103,7 +103,7 @@ class CorticalPyramidalTemplate(object):
 
 
 
-if __name__ == '__main__':
+if __name__ == 'dt':
 
     print("main")
 
