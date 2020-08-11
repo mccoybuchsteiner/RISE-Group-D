@@ -9,7 +9,8 @@ import sys,os,os.path
 import scipy.fftpack
 
 # Data path
-data_path = "/home/pablo/Desktop/Biophysical_thalamocortical_system/thalamocortical/results/"
+data_path = "/Users/a0w00wn/Documents/GitHub/RISE-Group-D/Biophysical_thalamocortical_system/thalamocortical/results/"
+# "/home/pablo/Desktop/Biophysical_thalamocortical_system/thalamocortical/results/"
 
 # Number of neurons (all layers except INs)
 N = 10.0
