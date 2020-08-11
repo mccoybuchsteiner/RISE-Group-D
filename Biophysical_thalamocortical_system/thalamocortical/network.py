@@ -11,10 +11,10 @@ import time
 import numpy as np
 import neuron
 import LFPy
-#from mpi4py import MPI
+from mpi4py import MPI
 
 # Initialize the MPI environment
-# comm = MPI.COMM_WORLD
+#comm = MPI.COMM_WORLD
 size = 1 #comm.Get_size()
 rank = 0 #comm.Get_rank()
 
@@ -185,7 +185,7 @@ def worker(stimulus,stimulus_type):
     # To avoid Neuron displaying messages
     copystdout = sys.stdout
     # Print info of process
-    print("Rank = %s, Stimulus = %s, Experiment = %s" % (0, stimulus,stimulus_type))
+    print("Rank = %s, Stimulus = %s, Experiment = %s" % (rank, stimulus,stimulus_type))
 
     comb = 0
     for stim in stimulus:
@@ -337,11 +337,6 @@ def worker(stimulus,stimulus_type):
                     exec( 'spikes_RC_OFF.append(apc_RC_count_OFF%s)' % n)
 
                     # Retina inputs
-                    # TODO: Check out network.py line 170ish for details about
-                    # syn_comps_prox[count] and other variables for second
-                    # argument of the functions below. May need to match up which
-                    # presynpatic element are used to create which synapses, since
-                    # some are for interneurons and some for pyramidal cells.
                     template2.createSynapse(RCs_ON[n], 0, False, np.array(spikes_ON[n]), 1.0)
                     template2.createSynapse(RCs_OFF[n], 0, False, np.array(spikes_OFF[n]), 1.0)
 
@@ -735,32 +730,39 @@ def worker(stimulus,stimulus_type):
 def main():
 
     # Start timer
-    start_c = time.time()
+    if rank==0:
+        start_c = time.time()
 
     # Divide data into chunks
-    chunks = [[] for _ in range(size)]
-    chunks_exp = [[] for _ in range(size)]
-    cc = 0
-    for pp1 in p1:
-        for pp2 in p2:
-            for i, chunk in enumerate(stimulus):
-                chunks[(i+cc*len(stimulus)) % size].append(chunk)
-                chunks_exp[(i+cc*len(stimulus)) % size].append(cc)
-            cc+=1
+    if rank == 0:
+        chunks = [[] for _ in range(size)]
+        chunks_exp = [[] for _ in range(size)]
+        cc = 0
+        for pp1 in p1:
+            for pp2 in p2:
+                for i, chunk in enumerate(stimulus):
+                    chunks[(i+cc*len(stimulus)) % size].append(chunk)
+                    chunks_exp[(i+cc*len(stimulus)) % size].append(cc)
+                cc+=1
+
+    else:
+        chunks = None
+        chunks_exp = None
 
     # Scatter data
-    stim = []
-    stim = chunks # comm.scatter(chunks,root=0)
-    stim_exp = []
-    stim_exp = chunks_exp # comm.scatter(chunks_exp,root=0)
+    stim = chunks # if this doesn't work, try chunks[0]
+    #stim = comm.scatter(chunks,root=0)
+    stim_exp = chunks_exp # if this doesn't work, try chunks_exp[0]
+    #stim_exp = comm.scatter(chunks_exp,root=0)
+    
     value_to_return = worker(stim,stim_exp)
     # Gather data (to avoid MPI timed-out errors)
 #    results = comm.gather(value_to_return, root=0)
 
     # End of simulation
-    end_c = time.time()
-    print("time elapsed (h): %s" % str((end_c - start_c)/3600.0))
+    if rank == 0:
+        end_c = time.time()
+        print("time elapsed (h): %s" % str((end_c - start_c)/3600.0))
 
 if __name__ == '__main__':
     main()
-
