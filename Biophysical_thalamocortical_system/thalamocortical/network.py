@@ -74,7 +74,7 @@ PY_RC_mask = [2,2]
 PY_IN_mask = 4
 
 # Type of feedback (0 = phase-reversed, 1 = phase-matched, 2 = No feedback)
-feedback_type = 2
+feedback_type = 0
 
 # Stimulus setup
 # Stimulus type (0 = flashing circular spot, 1 = patch grating, 2 = receptive field)

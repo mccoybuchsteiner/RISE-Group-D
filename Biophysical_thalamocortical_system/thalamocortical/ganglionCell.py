@@ -14,10 +14,10 @@ import os
 import time
 
 #MPI
-#from mpi4py import MPI
-#comm = MPI.COMM_WORLD
-size = 1 # comm.Get_size()
-rank = 0 # comm.Get_rank()
+from mpi4py import MPI
+comm = MPI.COMM_WORLD
+size = comm.Get_size()
+rank = comm.Get_rank()
 
 import numpy as np
 from scipy.special import i0e
@@ -817,25 +817,29 @@ class Retina(object):
 def main():
 
     # Start timer
-    start_c = time.time()
+    if rank==0:
+        start_c = time.time()
 
     # Divide data into chunks
-    chunks = [[] for _ in range(size)]
-    for i, chunk in enumerate(stimulus):
-        chunks[i % size].append(chunk)
+    if rank == 0:
+        chunks = [[] for _ in range(size)]
+        for i, chunk in enumerate(stimulus):
+            chunks[i % size].append(chunk)
+    else:
+        chunks = None
 
 
     # Scatter data
     stim = []
-    stim = chunks # may have to figure out whether chunks works or something
-                  # else, such as the variable stimulus
-    results = worker(stim)
+    stim = comm.scatter(chunks,root=0)
+    value_to_return = worker(stim)
     # Gather data
-    #results = comm.gather(value_to_return, root=0)
+    results = comm.gather(value_to_return, root=0)
 
     # Show time elapsed
-    end_c = time.time()
-    print("time elapsed (h): %s" % str((end_c - start_c)/3600.0))
+    if rank == 0:
+        end_c = time.time()
+        print("time elapsed (h): %s" % str((end_c - start_c)/3600.0))
 
 if __name__ == '__main__':
      main()
