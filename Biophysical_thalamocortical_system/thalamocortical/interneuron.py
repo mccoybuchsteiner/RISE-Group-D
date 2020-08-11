@@ -123,7 +123,7 @@ class InterneuronTemplate(object):
 
         return syn
 
-    def somaCon(self, cell, syn):
+    def somaCon(self, cell, syn): # axonal inhibition to RC
 
         netcon = nrn.NetCon(cell.cell.soma(0.5)._ref_v, syn,sec=cell.cell.soma)
         netcon.threshold = -10.0
@@ -133,7 +133,7 @@ class InterneuronTemplate(object):
         return netcon
 
 
-    def triadCon(self, cell, syn, syn_loc):
+    def triadCon(self, cell, syn, syn_loc): # triad inhibition to RC 
 
         i=0
         for sec in cell.allseclist:
