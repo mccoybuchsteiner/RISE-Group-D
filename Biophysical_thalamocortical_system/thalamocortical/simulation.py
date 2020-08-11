@@ -46,7 +46,7 @@ class Simulation(object):
         Running the actual simulation in NEURON, simulations in NEURON
         is now interruptable.
         '''
-        nrn.dt = cells[0].timeres_NEURON
+        nrn.dt = cells[0].dt
 
         cvode = nrn.CVode()
 
@@ -69,7 +69,7 @@ class Simulation(object):
         nrn.frecord_init()
 
         ##Starting simulation at tstart
-        nrn.t = cells[0].tstartms
+        nrn.t = cells[0].tstart 
 
         for c in cells:
             c._loadspikes()
@@ -78,12 +78,12 @@ class Simulation(object):
         counter = 0.
         t0 = time()
         ti = nrn.t
-        if cells[0].tstopms > 10000:
-            interval = 1 / cells[0].timeres_NEURON * 1000
+        if cells[0].tstop > 10000:
+            interval = 1 / cells[0].dt * 1000
         else:
-            interval = 1 / cells[0].timeres_NEURON * 100
+            interval = 1 / cells[0].dt * 100
 
-        while nrn.t < cells[0].tstopms:
+        while nrn.t < cells[0].tstop:
             nrn.fadvance()
             counter += 1.
             if np.mod(counter, interval) == 0:
@@ -99,14 +99,14 @@ class Simulation(object):
         '''
         Record somatic membrane potential
         '''
-        cell.somav = nrn.Vector(int(cell.tstopms /
-                                         cell.timeres_python+1))
+        cell.somav = nrn.Vector(int(cell.tstop /
+                                         cell.dt+1))
         if cell.nsomasec == 0:
             pass
         elif cell.nsomasec == 1:
             for sec in cell.somalist:
                 cell.somav.record(sec(0.5)._ref_v,
-                              cell.timeres_python)
+                              cell.dt)
         elif cell.nsomasec > 1:
             nseg = cell.get_idx('soma').size
             i, j = divmod(nseg, 2)
@@ -115,20 +115,20 @@ class Simulation(object):
                 for seg in sec:
                     if nseg==2 and k == 1:
                         #if 2 segments, record from the first one:
-                        cell.somav.record(seg._ref_v, cell.timeres_python)
+                        cell.somav.record(seg._ref_v, cell.dt)
                     else:
                         if k == i*2:
                             #record from one of the middle segments:
                             cell.somav.record(seg._ref_v,
-                                              cell.timeres_python)
+                                              cell.dt)
                     k += 1
 
     def _collect_tvec(self,cell):
         '''
         Set the tvec to be a monotonically increasing numpy array after sim.
         '''
-        cell.tvec = np.arange(cell.tstopms / cell.timeres_python + 1) \
-                            * cell.timeres_python
+        cell.tvec = np.arange(cell.tstop / cell.dt + 1) \
+                            * cell.dt
 
     def _set_voltage_recorders(self,cell):
         '''
@@ -137,9 +137,9 @@ class Simulation(object):
         cell.memvreclist = nrn.List()
         for sec in cell.allseclist:
             for seg in sec:
-                memvrec = nrn.Vector(int(cell.tstopms /
-                                              cell.timeres_python+1))
-                memvrec.record(seg._ref_v, cell.timeres_python)
+                memvrec = nrn.Vector(int(cell.tstop /
+                                              cell.dt+1))
+                memvrec.record(seg._ref_v, cell.dt)
                 cell.memvreclist.append(memvrec)
 
     def _collect_vmem(self,cell):

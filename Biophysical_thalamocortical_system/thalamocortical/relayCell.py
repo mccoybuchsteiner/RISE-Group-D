@@ -13,8 +13,10 @@ import os
 nrn = neuron.h
 
 # Path to folder of neuron models
-root_path = os.path.dirname(os.path.realpath(__file__))
-root_path = root_path[0:root_path.find("thalamocortical")]
+# root_path = os.path.dirname(os.path.realpath(__file__))
+# root_path = root_path[0:root_path.find("thalamocortical")]
+root_path = '/Users/a0w00wn/Documents/GitHub/RISE-Group-D/Biophysical_thalamocortical_system/'
+
 
 class RCTemplate(object):
 
@@ -47,10 +49,11 @@ class RCTemplate(object):
             'v_init' : -60,
             'extracellular':False,
             'nsegs_method': 'none',
-            'timeres_NEURON':0.1,
-            'timeres_python':0.1,
-            'tstopms':2000,
-            'tstartms':0,
+            # 'timeres_NEURON':0.1,
+            # 'timeres_python':0.1,
+            'dt' : 0.1,
+            'tstop':2000,
+            'tstart':0,
             'templatefile': join(self.model_path, 'TC_GH2.hoc'),
             'templatename':'sTC',
             'templateargs':None,

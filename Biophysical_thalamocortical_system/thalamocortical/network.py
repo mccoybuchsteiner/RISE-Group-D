@@ -14,9 +14,9 @@ import LFPy
 from mpi4py import MPI
 
 # Initialize the MPI environment
-comm = MPI.COMM_WORLD
-size = comm.Get_size()
-rank = comm.Get_rank()
+#comm = MPI.COMM_WORLD
+size = 1 #comm.Get_size()
+rank = 0 #comm.Get_rank()
 
 # Import neuron models
 import ganglionCell
@@ -43,6 +43,7 @@ import topology
 
 # Path to folder 'thalamocortical'
 root_path = os.path.dirname(os.path.realpath(__file__))+"/"
+# root_path = "/Users/a0w00wn/Documents/GitHub/RISE-Group-D/Biophysical_thalamocortical_system/thalamocortical"
 
 #############################
 #### Start of parameters ####
@@ -225,7 +226,7 @@ def worker(stimulus,stimulus_type):
             NEURON_cells_to_sim = []
 
             # to remember positions of IN's dendrites
-            IN_dend_dict = np.zeros([N*N,2],dtype=int)
+            IN_dend_dict = np.zeros([int(N*N),2],dtype=int)
 
             #################################
             ### Creation of neuron models ###
@@ -249,23 +250,30 @@ def worker(stimulus,stimulus_type):
                     INs_OFF.append(template1.return_cell())
                     NEURON_cells_to_sim.append(INs_OFF[n])
 
-                    INs_ON[n].tstopms = tsim
-                    INs_ON[n].tstartms = 0.0
-                    INs_ON[n].timeres_NEURON = dt
-                    INs_ON[n].timeres_python = dt
-                    INs_OFF[n].tstopms = tsim
-                    INs_OFF[n].tstartms = 0.0
-                    INs_OFF[n].timeres_NEURON = dt
-                    INs_OFF[n].timeres_python = dt
+                    INs_ON[n].tstop = tsim
+                    INs_ON[n].tstart = 0.0
+                    INs_ON[n].dt = dt
+                    INs_ON[n].dt = dt
+                    INs_OFF[n].tstop = tsim
+                    INs_OFF[n].tstart = 0.0
+                    INs_OFF[n].dt = dt
+                    INs_OFF[n].dt = dt
 
                     # spike counter
-                    exec( 'apc_IN_ON%s = nrn.APCount(INs_ON[n].cell.soma(0.5))' % n)
+                    for sec in INs_ON[n].allseclist:
+                        soma = sec
+                        break
+                    # exec( 'apc_IN_ON%s = nrn.APCount(INs_ON[n].soma(0.5))' % n)
+                    exec( 'apc_IN_ON%s = nrn.APCount(soma(0.5))' % n)
                     exec( 'apc_IN_ON%s.thresh = -10.0' % n)
                     exec( 'apc_IN_count_ON%s = nrn.Vector(1)' % n)
                     exec( 'apc_IN_ON%s.record(apc_IN_count_ON%s)' % (n,n))
                     exec( 'spikes_IN_ON.append(apc_IN_count_ON%s)' % n)
-
-                    exec( 'apc_IN_OFF%s = nrn.APCount(INs_OFF[n].cell.soma(0.5))' % n)
+                    for sec in INs_OFF[n].allseclist:
+                        soma = sec
+                        break
+                    # exec( 'apc_IN_OFF%s = nrn.APCount(INs_OFF[n].cell.soma(0.5))' % n)
+                    exec( 'apc_IN_OFF%s = nrn.APCount(soma(0.5))' % n)
                     exec( 'apc_IN_OFF%s.thresh = -10.0' % n)
                     exec( 'apc_IN_count_OFF%s = nrn.Vector(1)' % n)
                     exec( 'apc_IN_OFF%s.record(apc_IN_count_OFF%s)' % (n,n))
@@ -281,7 +289,7 @@ def worker(stimulus,stimulus_type):
                         template1.createSynapse(INs_OFF[n], syn_comps_dist[count], True, np.array(spikes_OFF[int(sn)]))
                         template1.createSynapse(INs_OFF[n], syn_comps_prox[count], False, np.array(spikes_OFF[int(sn)]))
                         # Keep position of dendrite and corresponding IN
-                        IN_dend_dict[sn,:] = [n,count]
+                        IN_dend_dict[int(sn),:] = [n,count]
                         count+=1
 
                     n+=1
@@ -299,23 +307,30 @@ def worker(stimulus,stimulus_type):
                     RCs_OFF.append(template2.return_cell())
                     NEURON_cells_to_sim.append(RCs_OFF[n])
 
-                    RCs_ON[n].tstopms = tsim
-                    RCs_ON[n].tstartms = 0.0
-                    RCs_ON[n].timeres_NEURON = dt
-                    RCs_ON[n].timeres_python = dt
-                    RCs_OFF[n].tstopms = tsim
-                    RCs_OFF[n].tstartms = 0.0
-                    RCs_OFF[n].timeres_NEURON = dt
-                    RCs_OFF[n].timeres_python = dt
+                    RCs_ON[n].tstop = tsim
+                    RCs_ON[n].tstart = 0.0
+                    RCs_ON[n].dt = dt
+                    RCs_ON[n].dt = dt
+                    RCs_OFF[n].tstop = tsim
+                    RCs_OFF[n].tstart = 0.0
+                    RCs_OFF[n].dt = dt
+                    RCs_OFF[n].dt = dt
 
                     # spike counter
-                    exec( 'apc_RC_ON%s = nrn.APCount(RCs_ON[n].cell.soma[0](0.5))' % n)
+                    for sec in RCs_ON[n].allseclist:
+                        soma = sec
+                        break
+                    # exec( 'apc_RC_ON%s = nrn.APCount(RCs_ON[n].cell.soma[0](0.5))' % n)
+                    exec( 'apc_RC_ON%s = nrn.APCount(soma(0.5))' % n)
                     exec( 'apc_RC_ON%s.thresh = -10.0' % n)
                     exec( 'apc_RC_count_ON%s = nrn.Vector(1)' % n)
                     exec( 'apc_RC_ON%s.record(apc_RC_count_ON%s)' % (n,n))
                     exec( 'spikes_RC_ON.append(apc_RC_count_ON%s)' % n)
-
-                    exec( 'apc_RC_OFF%s = nrn.APCount(RCs_OFF[n].cell.soma[0](0.5))' % n)
+                    for sec in RCs_OFF[n].allseclist:
+                        soma = sec
+                        break
+                    # exec( 'apc_RC_OFF%s = nrn.APCount(RCs_OFF[n].cell.soma[0](0.5))' % n)
+                    exec( 'apc_RC_OFF%s = nrn.APCount(soma(0.5))' % n)
                     exec( 'apc_RC_OFF%s.thresh = -10.0' % n)
                     exec( 'apc_RC_count_OFF%s = nrn.Vector(1)' % n)
                     exec( 'apc_RC_OFF%s.record(apc_RC_count_OFF%s)' % (n,n))
@@ -346,46 +361,59 @@ def worker(stimulus,stimulus_type):
                     NEURON_cells_to_sim.append(PYs_h_OFF[n])
                     NEURON_cells_to_sim.append(PYs_v_OFF[n])
 
-                    PYs_h_ON[n].tstopms = tsim
-                    PYs_h_ON[n].tstartms = 0.0
-                    PYs_h_ON[n].timeres_NEURON = dt
-                    PYs_h_ON[n].timeres_python = dt
+                    PYs_h_ON[n].tstop = tsim
+                    PYs_h_ON[n].tstart = 0.0
+                    PYs_h_ON[n].dt = dt
+                    PYs_h_ON[n].dt = dt
 
-                    PYs_v_ON[n].tstopms = tsim
-                    PYs_v_ON[n].tstartms = 0.0
-                    PYs_v_ON[n].timeres_NEURON = dt
-                    PYs_v_ON[n].timeres_python = dt
+                    PYs_v_ON[n].tstop = tsim
+                    PYs_v_ON[n].tstart = 0.0
+                    PYs_v_ON[n].dt = dt
+                    PYs_v_ON[n].dt = dt
 
-                    PYs_h_OFF[n].tstopms = tsim
-                    PYs_h_OFF[n].tstartms = 0.0
-                    PYs_h_OFF[n].timeres_NEURON = dt
-                    PYs_h_OFF[n].timeres_python = dt
+                    PYs_h_OFF[n].tstop = tsim
+                    PYs_h_OFF[n].tstart = 0.0
+                    PYs_h_OFF[n].dt = dt
+                    PYs_h_OFF[n].dt = dt
 
-                    PYs_v_OFF[n].tstopms = tsim
-                    PYs_v_OFF[n].tstartms = 0.0
-                    PYs_v_OFF[n].timeres_NEURON = dt
-                    PYs_v_OFF[n].timeres_python = dt
+                    PYs_v_OFF[n].tstop = tsim
+                    PYs_v_OFF[n].tstart = 0.0
+                    PYs_v_OFF[n].dt = dt
+                    PYs_v_OFF[n].dt = dt
 
                     # spike counter
-                    exec( 'apc_PYs_h_ON%s = nrn.APCount(PYs_h_ON[n].cell.soma[0](0.5))' % n)
+                    for sec in PYs_h_ON[n].allseclist:
+                        soma = sec
+                        break
+                    # exec( 'apc_PYs_h_ON%s = nrn.APCount(PYs_h_ON[n].cell.soma[0](0.5))' % n)
+                    exec( 'apc_PYs_h_ON%s = nrn.APCount(soma(0.5))' % n)
                     exec( 'apc_PYs_h_ON%s.thresh = -10.0' % n)
                     exec( 'apc_PYs_h_count_ON%s = nrn.Vector(1)' % n)
                     exec( 'apc_PYs_h_ON%s.record(apc_PYs_h_count_ON%s)' % (n,n))
                     exec( 'spikes_CXPY_h_ON.append(apc_PYs_h_count_ON%s)' % n)
-
-                    exec( 'apc_PYs_v_ON%s = nrn.APCount(PYs_v_ON[n].cell.soma[0](0.5))' % n)
+                    for sec in PYs_v_ON[n].allseclist:
+                        soma = sec
+                        break
+                    # exec( 'apc_PYs_v_ON%s = nrn.APCount(PYs_v_ON[n].cell.soma[0](0.5))' % n)
+                    exec( 'apc_PYs_v_ON%s = nrn.APCount(soma(0.5))' % n)
                     exec( 'apc_PYs_v_ON%s.thresh = -10.0' % n)
                     exec( 'apc_PYs_v_count_ON%s = nrn.Vector(1)' % n)
                     exec( 'apc_PYs_v_ON%s.record(apc_PYs_v_count_ON%s)' % (n,n))
                     exec( 'spikes_CXPY_v_ON.append(apc_PYs_v_count_ON%s)' % n)
-
-                    exec( 'apc_PYs_h_OFF%s = nrn.APCount(PYs_h_OFF[n].cell.soma[0](0.5))' % n)
+                    for sec in PYs_h_OFF[n].allseclist:
+                        soma = sec
+                        break
+                    # exec( 'apc_PYs_h_OFF%s = nrn.APCount(PYs_h_OFF[n].cell.soma[0](0.5))' % n)
+                    exec( 'apc_PYs_h_OFF%s = nrn.APCount(soma(0.5))' % n)
                     exec( 'apc_PYs_h_OFF%s.thresh = -10.0' % n)
                     exec( 'apc_PYs_h_count_OFF%s = nrn.Vector(1)' % n)
                     exec( 'apc_PYs_h_OFF%s.record(apc_PYs_h_count_OFF%s)' % (n,n))
                     exec( 'spikes_CXPY_h_OFF.append(apc_PYs_h_count_OFF%s)' % n)
-
-                    exec( 'apc_PYs_v_OFF%s = nrn.APCount(PYs_v_OFF[n].cell.soma[0](0.5))' % n)
+                    for sec in PYs_v_OFF[n].allseclist:
+                        soma = sec
+                        break
+                    # exec( 'apc_PYs_v_OFF%s = nrn.APCount(PYs_v_OFF[n].cell.soma[0](0.5))' % n)
+                    exec( 'apc_PYs_v_OFF%s = nrn.APCount(soma(0.5))' % n)
                     exec( 'apc_PYs_v_OFF%s.thresh = -10.0' % n)
                     exec( 'apc_PYs_v_count_OFF%s = nrn.Vector(1)' % n)
                     exec( 'apc_PYs_v_OFF%s.record(apc_PYs_v_count_OFF%s)' % (n,n))
@@ -722,10 +750,11 @@ def main():
         chunks_exp = None
 
     # Scatter data
-    stim = []
-    stim = comm.scatter(chunks,root=0)
-    stim_exp = []
-    stim_exp = comm.scatter(chunks_exp,root=0)
+    stim = chunks # if this doesn't work, try chunks[0]
+    #stim = comm.scatter(chunks,root=0)
+    stim_exp = chunks_exp # if this doesn't work, try chunks_exp[0]
+    #stim_exp = comm.scatter(chunks_exp,root=0)
+    
     value_to_return = worker(stim,stim_exp)
     # Gather data (to avoid MPI timed-out errors)
 #    results = comm.gather(value_to_return, root=0)
@@ -737,4 +766,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
