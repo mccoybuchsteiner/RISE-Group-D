@@ -746,8 +746,8 @@ def main():
                 cc+=1
 
     else:
-        chunks = None
-        chunks_exp = None
+       chunks = None
+       chunks_exp = None
 
     # Scatter data
     stim = []
