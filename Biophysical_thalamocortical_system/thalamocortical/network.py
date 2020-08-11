@@ -444,23 +444,51 @@ def worker(stimulus,stimulus_type):
 
                     for sn in syns:
                         # triadic synapse
-                        exec( 'syn_ON%s = template2.triadSynapse(RCs_ON[int(sn)])' % str(general_counter))
+                        for sec in RCs_ON[int(sn)].allseclist:
+                            soma = sec
+                            break
+                        exec( 'syn_ON%s = template2.triadSynapse(soma)' % str(general_counter))
+                        # exec( 'syn_ON%s = template2.triadSynapse(RCs_ON[int(sn)])' % str(general_counter))
                         exec( 'netcon_ON%s = template1.triadCon(cell=INs_ON[n], syn=syn_ON%s, '\
-                        'syn_loc=syn_comps_dist[count])' % (str(general_counter),str(general_counter)))
-
+                        'syn_loc=0)' % (str(general_counter),str(general_counter)))
+                        # TODO
+                        # syn_comps_dist[count]
+                        
                         # soma connection
-                        exec( 'syn_ON%s = template2.somaInhibition(RCs_ON[int(sn)])' % str(general_counter+1))
-                        exec( 'netcon_ON%s = template1.somaCon(cell=INs_ON[n], '\
+                        for sec in RCs_ON[int(sn)].allseclist:
+                            soma = sec
+                            break
+                        exec( 'syn_ON%s = template2.somaInhibition(soma)' % str(general_counter + 1))
+                        # exec( 'syn_ON%s = template2.somaInhibition(RCs_ON[int(sn)])' % str(general_counter+1))
+                        for sec in INs_ON[int(n)].allseclist:
+                            soma = sec
+                            break
+                        exec( 'netcon_ON%s = template1.somaCon(soma=soma, '\
                         'syn=syn_ON%s)' % (str(general_counter+1),str(general_counter+1)))
 
                         # triadic synapse
-                        exec( 'syn_OFF%s = template2.triadSynapse(RCs_OFF[int(sn)])' % str(general_counter))
+                        for sec in RCs_OFF[int(sn)].allseclist:
+                            soma = sec
+                            break
+                        exec( 'syn_OFF%s = template2.triadSynapse(soma)' % str(general_counter))
+                        # exec( 'syn_OFF%s = template2.triadSynapse(RCs_OFF[int(sn)])' % str(general_counter))
+                        
                         exec( 'netcon_OFF%s = template1.triadCon(cell=INs_OFF[n], syn=syn_OFF%s, '\
-                        'syn_loc=syn_comps_dist[count])' % (str(general_counter),str(general_counter)))
-
+                        'syn_loc=0)' % (str(general_counter),str(general_counter)))
+                        
+                        # TODO
+                        # syn_comps_dist[count]
+                        
                         # soma connection
-                        exec( 'syn_OFF%s = template2.somaInhibition(RCs_OFF[int(sn)])' % str(general_counter+1))
-                        exec( 'netcon_OFF%s = template1.somaCon(cell=INs_OFF[n], '\
+                        for sec in RCs_OFF[int(sn)].allseclist:
+                            soma = sec
+                            break
+                        exec( 'syn_OFF%s = template2.somaInhibition(soma)' % str(general_counter + 1))
+                        # exec( 'syn_OFF%s = template2.somaInhibition(RCs_OFF[int(sn)])' % str(general_counter+1))
+                        for sec in INs_OFF[int(n)].allseclist:
+                            soma = sec
+                            break
+                        exec( 'netcon_OFF%s = template1.somaCon(soma=soma, '\
                         'syn=syn_OFF%s)' % (str(general_counter+1),str(general_counter+1)))
 
                         count+=1

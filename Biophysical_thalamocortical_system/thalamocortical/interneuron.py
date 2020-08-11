@@ -81,7 +81,7 @@ class InterneuronTemplate(object):
         cell = LFPy.TemplateCell(**cell_parameters)
         cell.set_rotation(x=-1.57, y=0.0, z=0.0)
         # self.cell = cell
-
+        nrn.pop_section()
         return cell
 
 
@@ -123,9 +123,9 @@ class InterneuronTemplate(object):
 
         return syn
 
-    def somaCon(self, cell, syn): # axonal inhibition to RC
+    def somaCon(self, soma, syn): # axonal inhibition to RC
 
-        netcon = nrn.NetCon(cell.cell.soma(0.5)._ref_v, syn,sec=cell.cell.soma)
+        netcon = nrn.NetCon(soma(0.5)._ref_v, syn,sec=soma)
         netcon.threshold = -10.0
         netcon.delay = 1.
         netcon.weight[0] = 0.004

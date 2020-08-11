@@ -114,6 +114,7 @@ proc init() { local v_potassium, v_sodium
 
 
 }
+pop_section()
 endtemplate sTC
 
 

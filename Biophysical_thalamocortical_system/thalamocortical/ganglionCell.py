@@ -794,18 +794,16 @@ class Retina(object):
 
     # Load spikes from file
     def loadSpikes(self,stim,trial,N,type):
-
         spikes = []
-
-        lines = [line.rstrip('\n') for line in open(root_path+"results/retina/"+type+"/stim"+str(stim)+"/spikes"+str(trial), "r")]
-
-        for n in np.arange(N*N):
-            h = lines[int(n)].split(',')
-            sp = []
-            for pos in np.arange(0,len(h)-1):
-                sp.append( float(h[pos]) )
-            spikes.append(sp)
-
+        for s in stim:
+            path = root_path+"results/retina/"+type+"/stim"+str(s)+"/spikes"+str(trial)
+            lines = [line.rstrip('\n') for line in open(path, "r")]
+            for n in np.arange(N*N):
+                h = lines[int(n)].split(',')
+                sp = []
+                for pos in np.arange(0,len(h)-1):
+                    sp.append( float(h[pos]) )
+                spikes.append(sp)
         return spikes
 
 
@@ -814,7 +812,7 @@ class Retina(object):
 ##### ! Main ################
 #############################
 
-def main():
+if __name__ == '__main__':
 
     # Start timer
     if rank==0:
@@ -841,8 +839,8 @@ def main():
         end_c = time.time()
         print("time elapsed (h): %s" % str((end_c - start_c)/3600.0))
 
-if __name__ == '__main__':
-     main()
+# if __name__ == '__main__':
+#     main()
 
 
 ################################################################################################

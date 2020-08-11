@@ -49,7 +49,7 @@ class CorticalPyramidalTemplate(object):
 
         cell = LFPy.TemplateCell(**cell_parameters)
         cell.set_rotation(x=-1.57, y=0.0, z=0.0)
-
+        nrn.pop_section()
         return cell
 
 

@@ -61,7 +61,7 @@ class RCTemplate(object):
         }
 
         cell = LFPy.TemplateCell(**cell_parameters)
-
+        nrn.pop_section()
         return cell
 
 
@@ -104,8 +104,9 @@ class RCTemplate(object):
         return syn
 
 
-    def triadSynapse(self, cell):
-        syn = nrn.Exp2Syn(0.5, sec=cell.cell.soma[0])
+    def triadSynapse(self, soma):
+        # syn = nrn.Exp2Syn(0.5, sec=cell.cell.soma[0])
+        syn = nrn.Exp2Syn(0.5, sec=soma)
         syn.e = -80.0
         syn.tau1 = .45
         syn.tau2 = 5.0
@@ -113,24 +114,24 @@ class RCTemplate(object):
         return syn
 
 
-    def somaInhibition(self, cell):
-        syn = nrn.Exp2Syn(0.5, sec=cell.cell.soma[0])
+    def somaInhibition(self, soma):
+        syn = nrn.Exp2Syn(0.5, sec=soma)
         syn.e = -60.0
         syn.tau1 = .45
         syn.tau2 = 5.0
 
         return syn
 
-    def somaInhibitionGABAB(self, cell):
-        syn = nrn.Exp2Syn(0.5, sec=cell.cell.soma[0])
+    def somaInhibitionGABAB(self, soma):
+        syn = nrn.Exp2Syn(0.5, sec=soma)
         syn.e = -80.0
         syn.tau1 = 60.0
         syn.tau2 = 200.0
 
         return syn
 
-    def somaExcitation(self, cell):
-        syn = nrn.Exp2Syn(0.5, sec=cell.cell.soma[0])
+    def somaExcitation(self, soma):
+        syn = nrn.Exp2Syn(0.5, sec=soma)
         syn.e = 10.0
         syn.tau1 = 0.2
         syn.tau2 = 1.2
