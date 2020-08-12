@@ -13,8 +13,10 @@ import os
 nrn = neuron.h
 
 # Path to folder of neuron models
-root_path = os.path.dirname(os.path.realpath(__file__))
-root_path = root_path[0:root_path.find("thalamocortical")]
+# root_path = os.path.dirname(os.path.realpath(__file__))
+# root_path = root_path[0:root_path.find("thalamocortical")]
+root_path = '/Users/a0w00wn/Documents/GitHub/RISE-Group-D/Biophysical_thalamocortical_system/'
+
 
 class RCTemplate(object):
 
@@ -47,10 +49,11 @@ class RCTemplate(object):
             'v_init' : -60,
             'extracellular':False,
             'nsegs_method': 'none',
-            'timeres_NEURON':0.1,
-            'timeres_python':0.1,
-            'tstopms':2000,
-            'tstartms':0,
+            # 'timeres_NEURON':0.1,
+            # 'timeres_python':0.1,
+            'dt' : 0.1,
+            'tstop':2000,
+            'tstart':0,
             'templatefile': join(self.model_path, 'TC_GH2.hoc'),
             'templatename':'sTC',
             'templateargs':None,
@@ -58,7 +61,7 @@ class RCTemplate(object):
         }
 
         cell = LFPy.TemplateCell(**cell_parameters)
-
+        nrn.pop_section()
         return cell
 
 
@@ -101,8 +104,9 @@ class RCTemplate(object):
         return syn
 
 
-    def triadSynapse(self, cell):
-        syn = nrn.Exp2Syn(0.5, sec=cell.cell.soma[0])
+    def triadSynapse(self, soma):
+        # syn = nrn.Exp2Syn(0.5, sec=cell.cell.soma[0])
+        syn = nrn.Exp2Syn(0.5, sec=soma)
         syn.e = -80.0
         syn.tau1 = .45
         syn.tau2 = 5.0
@@ -110,24 +114,24 @@ class RCTemplate(object):
         return syn
 
 
-    def somaInhibition(self, cell):
-        syn = nrn.Exp2Syn(0.5, sec=cell.cell.soma[0])
+    def somaInhibition(self, soma):
+        syn = nrn.Exp2Syn(0.5, sec=soma)
         syn.e = -60.0
         syn.tau1 = .45
         syn.tau2 = 5.0
 
         return syn
 
-    def somaInhibitionGABAB(self, cell):
-        syn = nrn.Exp2Syn(0.5, sec=cell.cell.soma[0])
+    def somaInhibitionGABAB(self, soma):
+        syn = nrn.Exp2Syn(0.5, sec=soma)
         syn.e = -80.0
         syn.tau1 = 60.0
         syn.tau2 = 200.0
 
         return syn
 
-    def somaExcitation(self, cell):
-        syn = nrn.Exp2Syn(0.5, sec=cell.cell.soma[0])
+    def somaExcitation(self, soma):
+        syn = nrn.Exp2Syn(0.5, sec=soma)
         syn.e = 10.0
         syn.tau1 = 0.2
         syn.tau2 = 1.2

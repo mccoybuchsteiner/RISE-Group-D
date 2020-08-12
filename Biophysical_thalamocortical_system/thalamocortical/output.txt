@@ -1,0 +1,17 @@
+[INFO] [2020.8.11 16:8:44 /usr/local/miniconda/conda-bld/nest-simulator_1583214485943/work/nestkernel/rng_manager.cpp:217 @ Network::create_rngs_] : Creating default RNGs
+[INFO] [2020.8.11 16:8:44 /usr/local/miniconda/conda-bld/nest-simulator_1583214485943/work/nestkernel/rng_manager.cpp:260 @ Network::create_grng_] : Creating new default global RNG
+
+              -- N E S T --
+  Copyright (C) 2004 The NEST Initiative
+
+ Version: nest-2.20.0
+ Built: Mar  3 2020 05:53:48
+
+ This program is provided AS IS and comes with
+ NO WARRANTY. See the file LICENSE for details.
+
+ Problems or suggestions?
+   Visit https://www.nest-simulator.org
+
+ Type 'nest.help()' to find out more about NEST.
+

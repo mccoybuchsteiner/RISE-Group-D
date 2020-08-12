@@ -7,7 +7,13 @@
 ## is defined as a non-separable center-surround filter implemented by means of
 ## recursive linear fiters.
 
-# MPI
+import nest
+
+import os
+# import sys
+import time
+
+#MPI
 from mpi4py import MPI
 comm = MPI.COMM_WORLD
 size = comm.Get_size()
@@ -18,11 +24,8 @@ from scipy.special import i0e
 from scipy.integrate import quadrature
 from scipy.integrate import dblquad
 from scipy.special import erf
-import os
-import sys
-import time
-import nest
-import matplotlib.pyplot as plt
+
+# import matplotlib.pyplot as plt
 
 #import dataPlot
 #reload(dataPlot)
@@ -42,7 +45,7 @@ visSize = 10.0
 
 # Stimulus type (0 = flashing circular spot, 1 = patch grating, 2 = receptive
 # field, 3 = temporal impulse response, 4 = horizontal bar)
-stimulustype = 0
+stimulustype = 1
 
 # Grating parameters
 Cpg = 0.7 # contrast
@@ -62,7 +65,7 @@ binsize = 5.0 # bin size used for PSTHs
 numbertrials = 5.0 # repetitions of the experiment
 
 # Select between ON/OFF ganglion cells
-ganglion_cell_type = "ON"
+ganglion_cell_type = "OFF"
 # Type of spot (only for the receptive field). RF_1 = white spot, RF_2 =
 # black spot
 spot_type = "RF_1"
@@ -113,7 +116,7 @@ elif stimulustype == 4:
 
 # Create folders
 if rank == 0:
-    os.system("mkdir "+root_path+"results/retina")
+    os.system("mkdir -p"+root_path+"results/retina")
     if stimulustype == 0:
         os.system("mkdir "+root_path+"results/retina/disk")
         os.system("mkdir "+root_path+"results/retina/disk/"+ganglion_cell_type)
@@ -232,13 +235,13 @@ class LinearFilter(object):
         c = np.exp(-self.step/tauC)
         self.b = np.zeros(1)
         self.b[0] = np.power(1-c,self.N)
-        self.a = np.zeros(self.N+1)
+        self.a = np.zeros(int(self.N+1))
 
         for i in np.arange(0,self.N+1,1):
-            self.a[i] = np.power(-c,i) * self.combination(self.N,i)
+            self.a[int(i)] = np.power(-c,int(i)) * self.combination(self.N,int(i))
 
         self.last_inputs = np.zeros(self.M)
-        self.last_values = np.zeros(self.N+1)
+        self.last_values = np.zeros(int(self.N+1))
 
     # Combinatorials of gamma function:
     def arrangement(self,n,k):
@@ -259,9 +262,9 @@ class LinearFilter(object):
     def update(self):
 
         # Rotation on addresses of the last_values.
-        fakepoint=self.last_values[self.N]
+        fakepoint=self.last_values[int(self.N)]
         for i in np.arange(1,self.N+1,1):
-            self.last_values[self.N+1-i]=self.last_values[self.N-i]
+            self.last_values[int(self.N+1-i)]=self.last_values[int(self.N-i)]
         self.last_values[0]=fakepoint
 
         # Calculating new value of filter recursively:
@@ -269,14 +272,14 @@ class LinearFilter(object):
         for j in np.arange(1,self.M,1):
             self.last_values[0] += ( self.b[j] * self.last_inputs[j] )
         for k in np.arange(1,self.N+1,1):
-            self.last_values[0] -= ( self.a[k] * self.last_values[k] )
+            self.last_values[0] -= ( self.a[int(k)] * self.last_values[int(k)] )
         if(self.a[0]!=1.0):
             self.last_values[0] = self.last_values[0] / self.a[0]
 
     # reset values
     def resetValues(self):
         self.last_inputs = np.zeros(self.M)
-        self.last_values = np.zeros(self.N+1)
+        self.last_values = np.zeros(int(self.N+1))
 
 ## Ganglion cell
 class ganglionCell(object):
@@ -791,18 +794,16 @@ class Retina(object):
 
     # Load spikes from file
     def loadSpikes(self,stim,trial,N,type):
-
         spikes = []
-
-        lines = [line.rstrip('\n') for line in open(root_path+"results/retina/"+type+"/stim"+str(stim)+"/spikes"+str(trial), "r")]
-
-        for n in np.arange(N*N):
-            h = lines[int(n)].split(',')
-            sp = []
-            for pos in np.arange(0,len(h)-1):
-                sp.append( float(h[pos]) )
-            spikes.append(sp)
-
+        for s in stim:
+            path = root_path+"results/retina/"+type+"/stim"+str(s)+"/spikes"+str(trial)
+            lines = [line.rstrip('\n') for line in open(path, "r")]
+            for n in np.arange(N*N):
+                h = lines[int(n)].split(',')
+                sp = []
+                for pos in np.arange(0,len(h)-1):
+                    sp.append( float(h[pos]) )
+                spikes.append(sp)
         return spikes
 
 
@@ -811,7 +812,7 @@ class Retina(object):
 ##### ! Main ################
 #############################
 
-def main():
+if __name__ == '__main__':
 
     # Start timer
     if rank==0:
@@ -838,8 +839,8 @@ def main():
         end_c = time.time()
         print("time elapsed (h): %s" % str((end_c - start_c)/3600.0))
 
-if __name__ == '__main__':
-     main()
+# if __name__ == '__main__':
+#     main()
 
 
 ################################################################################################

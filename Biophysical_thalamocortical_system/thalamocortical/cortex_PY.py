@@ -14,8 +14,9 @@ import os
 nrn = neuron.h
 
 # Path to folder of neuron models
-root_path = os.path.dirname(os.path.realpath(__file__))
-root_path = root_path[0:root_path.find("thalamocortical")]
+# root_path = os.path.dirname(os.path.realpath(__file__))
+# root_path = root_path[0:root_path.find("thalamocortical")]
+root_path = '/Users/a0w00wn/Documents/GitHub/RISE-Group-D/Biophysical_thalamocortical_system/'
 
 class CorticalPyramidalTemplate(object):
 
@@ -34,10 +35,11 @@ class CorticalPyramidalTemplate(object):
             'extracellular':False,
             'nsegs_method': 'lambda_f',
             'lambda_f': 50,
-            'timeres_NEURON':0.1,
-            'timeres_python':0.1,
-            'tstopms':2000,
-            'tstartms':0,
+            #'timeres_NEURON':0.1,
+            #'timeres_python':0.1,
+            'dt' : 0.1,
+            'tstop':2000,
+            'tstart':0,
             'templatefile': join(self.model_path, 'sPY_template'),
             'templatename':'sPY',
             'templateargs':None,
@@ -47,7 +49,7 @@ class CorticalPyramidalTemplate(object):
 
         cell = LFPy.TemplateCell(**cell_parameters)
         cell.set_rotation(x=-1.57, y=0.0, z=0.0)
-
+        nrn.pop_section()
         return cell
 
 
