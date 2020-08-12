@@ -8,6 +8,7 @@
 ## recursive linear fiters.
 
 # MPI
+import nest
 from mpi4py import MPI
 comm = MPI.COMM_WORLD
 size = comm.Get_size()
@@ -21,7 +22,6 @@ from scipy.special import erf
 import os
 import sys
 import time
-import nest
 import matplotlib.pyplot as plt
 
 #import dataPlot
@@ -62,7 +62,7 @@ binsize = 5.0 # bin size used for PSTHs
 numbertrials = 5.0 # repetitions of the experiment
 
 # Select between ON/OFF ganglion cells
-ganglion_cell_type = "ON"
+ganglion_cell_type = "OFF"
 # Type of spot (only for the receptive field). RF_1 = white spot, RF_2 =
 # black spot
 spot_type = "RF_1"
@@ -113,7 +113,7 @@ elif stimulustype == 4:
 
 # Create folders
 if rank == 0:
-    os.system("mkdir "+root_path+"results/retina")
+    os.system("mkdir -p "+root_path+"results/retina")
     if stimulustype == 0:
         os.system("mkdir "+root_path+"results/retina/disk")
         os.system("mkdir "+root_path+"results/retina/disk/"+ganglion_cell_type)

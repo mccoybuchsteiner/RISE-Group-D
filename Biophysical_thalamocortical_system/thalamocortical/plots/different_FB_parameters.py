@@ -11,7 +11,7 @@ import scipy.fftpack
 from scipy.ndimage.filters import gaussian_filter
 
 # Data path
-data_path = "/home/pablo/Desktop/Biophysical_thalamocortical_system/thalamocortical/results/"
+data_path = "/Users/carol.h.wang/Documents/GitHub/RISE-Group-D/Biophysical_thalamocortical_system/thalamocortical/results/"
 
 # Number of neurons (all layers except INs)
 N = 10.0

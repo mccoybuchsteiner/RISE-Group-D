@@ -5,7 +5,7 @@ import os
 ## Membrane-potential receptive fields of RCs and PYs to bright and dark spots.
 
 # data path
-data_path = "/home/pablo/Desktop/Biophysical_thalamocortical_system/thalamocortical/results/"
+data_path = "/Users/carol.h.wang/Documents/GitHub/RISE-Group-D/Biophysical_thalamocortical_system/thalamocortical/results/"
 
 def loadArray(path,stim):
 
