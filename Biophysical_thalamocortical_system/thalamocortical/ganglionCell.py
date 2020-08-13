@@ -38,7 +38,7 @@ root_path = os.path.dirname(os.path.realpath(__file__))+"/"
 #############################
 
 # Number of neurons per row (total number of neurons in the grid: N*N)
-N = 10.0
+N = 4.0
 
 # Visual angle (deg)
 visSize = 10.0
